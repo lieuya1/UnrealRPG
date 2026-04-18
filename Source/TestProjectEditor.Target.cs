@@ -9,6 +9,8 @@ public class TestProjectEditorTarget : TargetRules
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
+		bUseAdaptiveUnityBuild = false;
 
 		ExtraModuleNames.AddRange( new string[] { "TestProject" } );
 	}
