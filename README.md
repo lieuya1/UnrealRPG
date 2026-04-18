@@ -16,3 +16,5 @@ Possible issues to watch out for
 Plugins — if you use any third party plugins, you'll need to reinstall them on the new machine
 Git LFS — if you set up LFS, make sure it's installed on the new computer too before pulling, otherwise assets may not download correctly
 Engine path differences — if you have any hardcoded paths in your project they may break on a different machine
+
+TO work with your aws GameLiftServer be sure to package it add New folder named PackagedGame on your UNREAL file, then Package the Client first and Package the Server
