@@ -2,6 +2,7 @@
 #include "Character/BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Tags/TPGameplayTags.h"
 
 void UTPAnimInstance::NativeInitializeAnimation()
 {
@@ -14,7 +15,6 @@ void UTPAnimInstance::NativeInitializeAnimation()
 	if (!BaseCharacter) return;
 
 	CharacterMovementComponent = BaseCharacter->GetCharacterMovement();
-
 }
 
 void UTPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -28,13 +28,30 @@ void UTPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	GroundSpeed = UKismetMathLibrary::VSizeXY(CharacterMovementComponent->Velocity);
 
 	// Rotation Updates
-	// Set Aim rotation base on character's current aim direction
+	// Set aim rotation base on character's current aim direction
 	AimRotation = BaseCharacter->GetBaseAimRotation();
-	// Calculate rotation direction base on current velocity
+	// Calculate rotation direction based on current velocity
 	MovementRotation = UKismetMathLibrary::MakeRotFromX(BaseCharacter->GetVelocity());
 	// Calculate movement offset yaw to determine the difference between aim and movement direction
 	MovementOffsetYaw = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, AimRotation).Yaw;
 
-	// Orientation update
+	// Orientation logic
 	BaseCharacter->bUseControllerRotationYaw = bIsAccelerating;
+}
+
+void UTPAnimInstance::BindTagChanged()
+{
+	if (CombatComponent)
+	{
+		CombatComponent->OnTagChanged.RemoveDynamic(this, &UTPAnimInstance::HandleStateTagChanged);
+		CombatComponent->OnTagChanged.AddUniqueDynamic(this, &UTPAnimInstance::HandleStateTagChanged);
+	}
+}
+
+void UTPAnimInstance::HandleStateTagChanged(const FGameplayTag& Tag, int32 NewCount)
+{
+	if (Tag == FTPGameplayTags::Get().State_Blocking)
+	{
+		bIsBlocking = NewCount > 0;
+	}
 }

@@ -15,11 +15,16 @@ class TESTPROJECT_API APlayerCharacter : public ABaseCharacter
 
 public:
 	APlayerCharacter();
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
 
 protected:
 	virtual void BeginPlay() override;
 
-private: UPROPERTY(VisibleAnywhere, Category = "Camera")
+private:
+	void InitializeAbilitySystem();
+	
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	USpringArmComponent* SpringArm;
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
